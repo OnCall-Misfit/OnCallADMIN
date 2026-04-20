@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:stress": "playwright test --ignore-glob tests/stress/seed.spec.ts",
+    "test:e2e": "playwright test --config playwright.e2e.config.ts",
+    "test:all": "playwright test --ignore-glob tests/stress/seed.spec.ts && playwright test --config playwright.e2e.config.ts",
+    "test:report": "playwright show-report playwright-report/stress",
+    "db:seed": "playwright test tests/stress/seed.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,10 +23,12 @@
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.4.2",
     "postcss": "^8.5.10",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.3"
