@@ -53,7 +53,7 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     expect(row.first_name).toBe(payload.first_name);
     expect(row.last_name).toBe(payload.last_name);
     expect(row.status).toBe('received');
-    expect(row.age).toBe(28);
+    expect(row.birthdate).toBe('1998-04-21');
     expect(row.location).toBe('Manila, Philippines');
     expect(row.pay_rate).toBe(600);
     expect(row.pay_period).toBe('day');

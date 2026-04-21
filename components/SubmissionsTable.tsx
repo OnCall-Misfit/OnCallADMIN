@@ -66,7 +66,7 @@ export default function SubmissionsTable({ submissions }: Props) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {['Name', 'Age', 'Location', 'Status', 'Availability', 'Work Setup', 'Pay', 'Created', ''].map(
+              {['Name', 'Birthdate', 'Gender', 'Location', 'Status', 'Availability', 'Work Setup', 'Pay', 'Created', ''].map(
                 (col) => (
                   <th
                     key={col}
@@ -81,7 +81,7 @@ export default function SubmissionsTable({ submissions }: Props) {
           <tbody className="divide-y divide-gray-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-gray-400 text-sm">
+                <td colSpan={10} className="px-4 py-10 text-center text-gray-400 text-sm">
                   {search ? 'No results match that search.' : 'No submissions yet.'}
                 </td>
               </tr>
@@ -89,7 +89,8 @@ export default function SubmissionsTable({ submissions }: Props) {
               filtered.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900">{s.first_name} {s.last_name}</td>
-                  <td className="px-4 py-3 text-gray-600">{s.age}</td>
+                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{s.birthdate}</td>
+                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{s.gender}</td>
                   <td className="px-4 py-3 text-gray-600">{s.location}</td>
                   <td className="px-4 py-3">
                     <span

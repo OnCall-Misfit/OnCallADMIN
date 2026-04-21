@@ -59,7 +59,8 @@ export interface WorkHistoryEntry {
 export interface SubmissionPayload {
   first_name: string;
   last_name: string;
-  age: number;
+  birthdate: string;
+  gender: string;
   location: string;
   contact_number: string;
   fb_link: string;
@@ -98,7 +99,8 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
   return {
     first_name: TEST_PREFIX,
     last_name: `User ${suffix}`,
-    age: 28,
+    birthdate: '1998-04-21',
+    gender: 'Female',
     location: 'Manila, Philippines',
     contact_number: '+63 912 345 6789',
     fb_link: 'https://facebook.com/test.stress.user',

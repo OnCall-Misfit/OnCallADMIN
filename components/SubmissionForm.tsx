@@ -13,7 +13,8 @@ interface Props {
 type FormState = {
   first_name: string;
   last_name: string;
-  age: string;
+  birthdate: string;
+  gender: string;
   location: string;
   contact_number: string;
   fb_link: string;
@@ -64,7 +65,8 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
   const [form, setForm] = useState<FormState>({
     first_name: submission?.first_name ?? '',
     last_name: submission?.last_name ?? '',
-    age: String(submission?.age ?? 18),
+    birthdate: submission?.birthdate ?? '',
+    gender: submission?.gender ?? 'Prefer not to say',
     location: submission?.location ?? '',
     contact_number: submission?.contact_number ?? '',
     fb_link: submission?.fb_link ?? '',
@@ -289,7 +291,8 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
     const payload: SubmissionPayload = {
       first_name: form.first_name,
       last_name: form.last_name,
-      age: parseInt(form.age),
+      birthdate: form.birthdate,
+      gender: form.gender as 'Male' | 'Female' | 'LGBTQ+' | 'Prefer not to say',
       location: form.location,
       contact_number: form.contact_number,
       fb_link: form.fb_link,
@@ -443,7 +446,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
           </div>
         </div>
 
-        {/* ── Name / Age / Location / etc. ─────────────── */}
+        {/* ── Name / Birthdate / Gender / Location / etc. ─────────────── */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={label}>First Name *</label>
@@ -466,17 +469,31 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
             />
           </div>
           <div>
-            <label className={label}>Age *</label>
+            <label className={label}>Birthdate *</label>
             <input
-              type="number"
-              name="age"
-              value={form.age}
+              type="date"
+              name="birthdate"
+              value={form.birthdate}
               onChange={handleChange}
-              min={16}
-              max={120}
+              max={new Date().toISOString().split('T')[0]}
               className={input}
               required
             />
+          </div>
+          <div>
+            <label className={label}>Gender *</label>
+            <select
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className={input}
+              required
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="LGBTQ+">LGBTQ+</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
           </div>
           <div>
             <label className={label}>Location *</label>

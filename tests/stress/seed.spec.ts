@@ -64,7 +64,8 @@ const SKILL_DEFS = [
 const PROFILES = [
   {
     first_name: 'Maria', last_name: 'Santos',
-    age: 34,
+    birthdate: '1992-04-21',
+    gender: 'Female',
     location: 'Quezon City, Metro Manila',
     contact_number: '+63 917 123 4567',
     fb_link: 'https://facebook.com/maria.santos.caregiver',
@@ -80,7 +81,8 @@ const PROFILES = [
   },
   {
     first_name: 'Jose', last_name: 'Reyes',
-    age: 28,
+    birthdate: '1998-04-21',
+    gender: 'Male',
     location: 'Cebu City, Cebu',
     contact_number: '+63 918 234 5678',
     fb_link: 'https://facebook.com/jose.reyes.cg',
@@ -96,7 +98,8 @@ const PROFILES = [
   },
   {
     first_name: 'Ana', last_name: 'Dela Cruz',
-    age: 42,
+    birthdate: '1984-04-21',
+    gender: 'Female',
     location: 'Davao City, Davao del Sur',
     contact_number: '+63 919 345 6789',
     fb_link: 'https://facebook.com/ana.delacruz.nurse',
@@ -113,7 +116,8 @@ const PROFILES = [
   },
   {
     first_name: 'Rodrigo', last_name: 'Bautista',
-    age: 31,
+    birthdate: '1995-04-21',
+    gender: 'Male',
     location: 'Caloocan, Metro Manila',
     contact_number: '+63 920 456 7890',
     fb_link: 'https://facebook.com/rodrigo.bautista.care',
@@ -129,7 +133,8 @@ const PROFILES = [
   },
   {
     first_name: 'Ligaya', last_name: 'Fernandez',
-    age: 38,
+    birthdate: '1988-04-21',
+    gender: 'Female',
     location: 'Pasig, Metro Manila',
     contact_number: '+63 921 567 8901',
     fb_link: 'https://facebook.com/ligaya.fernandez',
@@ -145,7 +150,8 @@ const PROFILES = [
   },
   {
     first_name: 'Emmanuel', last_name: 'Castillo',
-    age: 25,
+    birthdate: '2001-04-21',
+    gender: 'Male',
     location: 'Antipolo, Rizal',
     contact_number: '+63 922 678 9012',
     fb_link: 'https://facebook.com/emmanuel.castillo.cg',
@@ -161,7 +167,8 @@ const PROFILES = [
   },
   {
     first_name: 'Rosario', last_name: 'Mendoza',
-    age: 47,
+    birthdate: '1979-04-21',
+    gender: 'Female',
     location: 'Iloilo City, Iloilo',
     contact_number: '+63 923 789 0123',
     fb_link: 'https://facebook.com/rosario.mendoza.nurse',
@@ -178,7 +185,8 @@ const PROFILES = [
   },
   {
     first_name: 'Danilo', last_name: 'Aquino',
-    age: 33,
+    birthdate: '1993-04-21',
+    gender: 'Male',
     location: 'Taguig, Metro Manila',
     contact_number: '+63 924 890 1234',
     fb_link: 'https://facebook.com/danilo.aquino.caregiver',
@@ -194,7 +202,8 @@ const PROFILES = [
   },
   {
     first_name: 'Marites', last_name: 'Soriano',
-    age: 29,
+    birthdate: '1997-04-21',
+    gender: 'Female',
     location: 'Las Piñas, Metro Manila',
     contact_number: '+63 925 901 2345',
     fb_link: 'https://facebook.com/marites.soriano',
@@ -210,7 +219,8 @@ const PROFILES = [
   },
   {
     first_name: 'Eduardo', last_name: 'Flores',
-    age: 52,
+    birthdate: '1974-04-21',
+    gender: 'Male',
     location: 'Cagayan de Oro City, Misamis Oriental',
     contact_number: '+63 926 012 3456',
     fb_link: 'https://facebook.com/eduardo.flores.rn',
@@ -227,7 +237,8 @@ const PROFILES = [
   },
   {
     first_name: 'Concepcion', last_name: 'Ramos',
-    age: 36,
+    birthdate: '1990-04-21',
+    gender: 'Female',
     location: 'Mandaue City, Cebu',
     contact_number: '+63 927 123 4560',
     fb_link: 'https://facebook.com/conce.ramos.caregiver',
@@ -243,7 +254,8 @@ const PROFILES = [
   },
   {
     first_name: 'Lovely', last_name: 'Torres',
-    age: 23,
+    birthdate: '2003-04-21',
+    gender: 'Female',
     location: 'Mandaluyong, Metro Manila',
     contact_number: '+63 928 234 5601',
     fb_link: 'https://facebook.com/lovely.torres.rn',
@@ -258,7 +270,8 @@ const PROFILES = [
   },
   {
     first_name: 'Bernardo', last_name: 'Pascual',
-    age: 44,
+    birthdate: '1982-04-21',
+    gender: 'Male',
     location: 'General Santos City, South Cotabato',
     contact_number: '+63 929 345 6702',
     fb_link: 'https://facebook.com/bernardo.pascual.rn',
@@ -275,7 +288,8 @@ const PROFILES = [
   },
   {
     first_name: 'Shiela', last_name: 'Navarro',
-    age: 27,
+    birthdate: '1999-04-21',
+    gender: 'Female',
     location: 'Bacoor, Cavite',
     contact_number: '+63 930 456 7803',
     fb_link: 'https://facebook.com/shiela.navarro.caregiver',
@@ -291,7 +305,8 @@ const PROFILES = [
   },
   {
     first_name: 'Ricardo', last_name: 'Villanueva',
-    age: 39,
+    birthdate: '1987-04-21',
+    gender: 'Male',
     location: 'Batangas City, Batangas',
     contact_number: '+63 931 567 8904',
     fb_link: 'https://facebook.com/ricardo.villanueva.rn',

@@ -39,7 +39,7 @@ async function fillMinimalForm(page: Page, firstName: string, lastName: string):
   // Clear and fill each required field.
   await page.fill('input[name="first_name"]', firstName);
   await page.fill('input[name="last_name"]', lastName);
-  await page.fill('input[name="age"]', '28');
+  await page.fill('input[name="birthdate"]', '1998-04-21');
   await page.fill('input[name="location"]', 'Manila, Philippines');
   await page.fill('input[name="contact_number"]', '+63 912 345 6789');
   await page.fill('input[name="fb_link"]', 'https://facebook.com/e2e.test.user');
@@ -101,7 +101,7 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
       supabase,
       makePayload({
         last_name: lastName,
-        age: 35,
+        birthdate: '1991-04-21',
         location: 'Cebu City',
         contact_number: '+63 999 888 7777',
         status: 'processed',
@@ -118,7 +118,7 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     // Fields must reflect the DB values.
     await expect(page.locator('input[name="first_name"]')).toHaveValue(TEST_PREFIX);
     await expect(page.locator('input[name="last_name"]')).toHaveValue(lastName);
-    await expect(page.locator('input[name="age"]')).toHaveValue('35');
+    await expect(page.locator('input[name="birthdate"]')).toHaveValue('1991-04-21');
     await expect(page.locator('input[name="location"]')).toHaveValue('Cebu City');
     await expect(page.locator('input[name="contact_number"]')).toHaveValue('+63 999 888 7777');
     await expect(page.locator('select[name="status"]')).toHaveValue('processed');

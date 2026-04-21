@@ -3,7 +3,8 @@ export interface Submission {
   idempotency_key: string;
   first_name: string;
   last_name: string;
-  age: number;
+  birthdate: string;
+  gender: 'Male' | 'Female' | 'LGBTQ+' | 'Prefer not to say';
   location: string;
   contact_number: string;
   fb_link: string;
@@ -46,7 +47,8 @@ export interface SkillDefinition {
 export interface SubmissionPayload {
   first_name: string;
   last_name: string;
-  age: number;
+  birthdate: string;
+  gender: 'Male' | 'Female' | 'LGBTQ+' | 'Prefer not to say';
   location: string;
   contact_number: string;
   fb_link: string;
