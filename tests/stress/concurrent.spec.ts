@@ -57,15 +57,15 @@ test.describe('Phase 2 — Concurrent Load', () => {
     for (let i = 0; i < 5; i++) {
       await insertSubmission(
         supabase,
-        makePayload({ name: `__STRESS_TEST__ ReadSeed-${i}` })
+        makePayload({ last_name: `ReadSeed-${i}` })
       );
     }
 
     const tasks = Array.from({ length: CONCURRENCY }, () => async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select('id, name, status, created_at')
-        .ilike('name', '__STRESS_TEST__%')
+        .select('id, first_name, last_name, status, created_at')
+        .ilike('first_name', '__STRESS_TEST__%')
         .order('created_at', { ascending: false })
         .limit(10);
 
@@ -89,7 +89,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
     const tasks = Array.from({ length: CONCURRENCY }, (_, i) => async () => {
       return insertSubmission(
         supabase,
-        makePayload({ name: `__STRESS_TEST__ ConcCreate-${i}` })
+        makePayload({ last_name: `ConcCreate-${i}` })
       );
     });
 
@@ -102,7 +102,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
     const { data: rows } = await supabase
       .from('submissions')
       .select('id')
-      .ilike('name', '__STRESS_TEST__ ConcCreate-%');
+      .ilike('last_name', 'ConcCreate-%');
     expect((rows ?? []).length).toBeGreaterThanOrEqual(CONCURRENCY);
   });
 
@@ -116,7 +116,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
       Array.from({ length: CONCURRENCY }, (_, i) =>
         insertSubmission(
           supabase,
-          makePayload({ name: `__STRESS_TEST__ UpdRow-${i}` })
+          makePayload({ last_name: `UpdRow-${i}` })
         )
       )
     );
@@ -167,7 +167,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
       Array.from({ length: CONCURRENCY }, (_, i) =>
         insertSubmission(
           supabase,
-          makePayload({ name: `__STRESS_TEST__ DelRow-${i}` })
+          makePayload({ last_name: `DelRow-${i}` })
         )
       )
     );
@@ -202,15 +202,15 @@ test.describe('Phase 2 — Concurrent Load', () => {
     for (let i = 0; i < 3; i++) {
       await insertSubmission(
         supabase,
-        makePayload({ name: `__STRESS_TEST__ RUW-baseline-${i}` })
+        makePayload({ last_name: `RUW-baseline-${i}` })
       );
     }
 
     const readTasks = Array.from({ length: 5 }, () => async () => {
       const { data, error } = await supabase
         .from('submissions')
-        .select('id, name, status')
-        .ilike('name', '__STRESS_TEST__%')
+        .select('id, first_name, last_name, status')
+        .ilike('first_name', '__STRESS_TEST__%')
         .limit(5);
       if (error) throw new Error(error.message);
       return data;
@@ -219,7 +219,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
     const writeTasks = Array.from({ length: 5 }, (_, i) => async () => {
       return insertSubmission(
         supabase,
-        makePayload({ name: `__STRESS_TEST__ RUW-write-${i}` })
+        makePayload({ last_name: `RUW-write-${i}` })
       );
     });
 
@@ -244,7 +244,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
       Array.from({ length: 4 }, (_, i) =>
         insertSubmission(
           supabase,
-          makePayload({ name: `__STRESS_TEST__ Chaos-pre-${i}` })
+          makePayload({ last_name: `Chaos-pre-${i}` })
         )
       )
     );
@@ -258,8 +258,8 @@ test.describe('Phase 2 — Concurrent Load', () => {
         return async () => {
           const { error } = await supabase
             .from('submissions')
-            .select('id, name, status')
-            .ilike('name', '__STRESS_TEST__%')
+            .select('id, first_name, last_name, status')
+            .ilike('first_name', '__STRESS_TEST__%')
             .limit(5);
           if (error) throw new Error(error.message);
         };
@@ -270,7 +270,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
         return async () => {
           await insertSubmission(
             supabase,
-            makePayload({ name: `__STRESS_TEST__ Chaos-new-${i}` })
+            makePayload({ last_name: `Chaos-new-${i}` })
           );
         };
       }
@@ -292,7 +292,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
         const { error } = await supabase
           .from('submissions')
           .select('id')
-          .ilike('name', '__STRESS_TEST__%')
+          .ilike('first_name', '__STRESS_TEST__%')
           .limit(3);
         if (error) throw new Error(error.message);
       };
@@ -340,7 +340,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
           const id = await insertSubmission(
             supabase,
             makePayload({
-              name: `__STRESS_TEST__ W${workerId}-P${i}-${Date.now()}`,
+              last_name: `W${workerId}-P${i}-${Date.now()}`,
               // Vary the data per worker so updates are meaningful.
               status: 'received',
               pay_rate: 400 + workerId * 50,
@@ -452,7 +452,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
     const { data: leftover } = await supabase
       .from('submissions')
       .select('id')
-      .ilike('name', '__STRESS_TEST__ W%');
+      .ilike('last_name', 'W%');
     expect(leftover ?? []).toHaveLength(0);
   });
 });

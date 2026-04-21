@@ -35,9 +35,10 @@ const supabase = getSupabaseClient();
  * Fills the mandatory form fields.  All other fields keep their defaults,
  * which are valid (work_history defaults to '[]', status to 'received').
  */
-async function fillMinimalForm(page: Page, name: string): Promise<void> {
+async function fillMinimalForm(page: Page, firstName: string, lastName: string): Promise<void> {
   // Clear and fill each required field.
-  await page.fill('input[name="name"]', name);
+  await page.fill('input[name="first_name"]', firstName);
+  await page.fill('input[name="last_name"]', lastName);
   await page.fill('input[name="age"]', '28');
   await page.fill('input[name="location"]', 'Manila, Philippines');
   await page.fill('input[name="contact_number"]', '+63 912 345 6789');
@@ -66,10 +67,10 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
   // -------------------------------------------------------------------------
 
   test('CREATE via form — submission lands in DB and appears in list', async ({ page }) => {
-    const name = `${TEST_PREFIX} E2E-Create-${Date.now()}`;
+    const lastName = `E2E-Create-${Date.now()}`;
 
     await page.goto('/submissions/new');
-    await fillMinimalForm(page, name);
+    await fillMinimalForm(page, TEST_PREFIX, lastName);
     await submitAndWait(page);
 
     // After redirect we should be on the home page.
@@ -78,14 +79,15 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     // Verify the row exists in Supabase.
     const { data: rows } = await supabase
       .from('submissions')
-      .select('id, name, status')
-      .eq('name', name);
+      .select('id, first_name, last_name, status')
+      .eq('first_name', TEST_PREFIX)
+      .eq('last_name', lastName);
 
     expect((rows ?? []).length).toBe(1);
     expect(rows![0].status).toBe('received');
 
     // The submission must also appear in the on-screen table.
-    await expect(page.locator(`text=${name}`)).toBeVisible();
+    await expect(page.locator(`text=${TEST_PREFIX} ${lastName}`)).toBeVisible();
   });
 
   // -------------------------------------------------------------------------
@@ -94,11 +96,11 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
 
   test('READ — edit page pre-fills all saved field values', async ({ page }) => {
     // Insert directly so we control exact values.
-    const name = `${TEST_PREFIX} E2E-Read-${Date.now()}`;
+    const lastName = `E2E-Read-${Date.now()}`;
     const id = await insertSubmission(
       supabase,
       makePayload({
-        name,
+        last_name: lastName,
         age: 35,
         location: 'Cebu City',
         contact_number: '+63 999 888 7777',
@@ -111,10 +113,11 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     await page.goto(`/submissions/${id}`);
 
     // Heading shows the submission name.
-    await expect(page.locator('h1')).toContainText(name);
+    await expect(page.locator('h1')).toContainText(`${TEST_PREFIX} ${lastName}`);
 
     // Fields must reflect the DB values.
-    await expect(page.locator('input[name="name"]')).toHaveValue(name);
+    await expect(page.locator('input[name="first_name"]')).toHaveValue(TEST_PREFIX);
+    await expect(page.locator('input[name="last_name"]')).toHaveValue(lastName);
     await expect(page.locator('input[name="age"]')).toHaveValue('35');
     await expect(page.locator('input[name="location"]')).toHaveValue('Cebu City');
     await expect(page.locator('input[name="contact_number"]')).toHaveValue('+63 999 888 7777');
@@ -128,17 +131,18 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
   // -------------------------------------------------------------------------
 
   test('UPDATE via form — changed fields persist in DB', async ({ page }) => {
-    const originalName = `${TEST_PREFIX} E2E-Update-orig-${Date.now()}`;
+    const origLastName = `E2E-Update-orig-${Date.now()}`;
     const id = await insertSubmission(
       supabase,
-      makePayload({ name: originalName, status: 'received', pay_rate: 500 })
+      makePayload({ last_name: origLastName, status: 'received', pay_rate: 500 })
     );
 
     await page.goto(`/submissions/${id}`);
 
-    // Change name, status, and pay_rate.
-    const updatedName = `${TEST_PREFIX} E2E-Update-new-${Date.now()}`;
-    await page.fill('input[name="name"]', updatedName);
+    // Change last_name, status, and pay_rate.
+    const newLastName = `E2E-Update-new-${Date.now()}`;
+    await page.fill('input[name="first_name"]', TEST_PREFIX);
+    await page.fill('input[name="last_name"]', newLastName);
     await page.selectOption('select[name="status"]', 'processed');
     await page.fill('input[name="pay_rate"]', '900');
 
@@ -149,11 +153,12 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     // Verify DB reflects the changes.
     const { data: row } = await supabase
       .from('submissions')
-      .select('name, status, pay_rate')
+      .select('first_name, last_name, status, pay_rate')
       .eq('id', id)
       .single();
 
-    expect(row!.name).toBe(updatedName);
+    expect(row!.first_name).toBe(TEST_PREFIX);
+    expect(row!.last_name).toBe(newLastName);
     expect(row!.status).toBe('processed');
     expect(row!.pay_rate).toBe(900);
   });
@@ -163,26 +168,27 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
   // -------------------------------------------------------------------------
 
   test('DELETE via table button — row removed from UI and DB', async ({ page }) => {
-    const name = `${TEST_PREFIX} E2E-Delete-${Date.now()}`;
-    const id = await insertSubmission(supabase, makePayload({ name }));
+    const lastName = `E2E-Delete-${Date.now()}`;
+    const displayName = `${TEST_PREFIX} ${lastName}`;
+    const id = await insertSubmission(supabase, makePayload({ last_name: lastName }));
 
     await page.goto('/');
 
     // The row must be visible before deleting.
-    await expect(page.locator(`text=${name}`)).toBeVisible();
+    await expect(page.locator(`text=${displayName}`)).toBeVisible();
 
     // Accept the confirm() dialog before clicking delete.
     page.once('dialog', (dialog) => dialog.accept());
 
     // Click the Delete button for this specific row.
-    const row = page.locator('tr', { hasText: name });
+    const row = page.locator('tr', { hasText: displayName });
     await row.locator('button', { hasText: 'Delete' }).click();
 
     // Wait for the table to re-render (router.refresh() triggers a re-fetch).
     await page.waitForResponse((resp) => resp.url().includes('localhost') && resp.status() === 200);
 
     // Row must no longer be in the DOM.
-    await expect(page.locator(`text=${name}`)).not.toBeVisible({ timeout: 8_000 });
+    await expect(page.locator(`text=${displayName}`)).not.toBeVisible({ timeout: 8_000 });
 
     // Row must be gone from Supabase too.
     const { data: gone } = await supabase
@@ -202,14 +208,14 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
   }: {
     browser: Browser;
   }) => {
-    const names = Array.from(
+    const lastNames = Array.from(
       { length: 3 },
-      (_, i) => `${TEST_PREFIX} E2E-Concurrent-${i}-${Date.now()}`
+      (_, i) => `E2E-Concurrent-${i}-${Date.now()}`
     );
 
     // Spin up 3 independent browser contexts (simulate 3 different users).
     const contexts = await Promise.all(
-      names.map(() => browser.newContext({ baseURL: 'http://localhost:3000' }))
+      lastNames.map(() => browser.newContext({ baseURL: 'http://localhost:3000' }))
     );
     const pages = await Promise.all(contexts.map((ctx) => ctx.newPage()));
 
@@ -217,7 +223,7 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     await Promise.all(pages.map((p) => p.goto('/submissions/new')));
 
     // Fill all 3 forms in parallel.
-    await Promise.all(pages.map((p, i) => fillMinimalForm(p, names[i])));
+    await Promise.all(pages.map((p, i) => fillMinimalForm(p, TEST_PREFIX, lastNames[i])));
 
     // Submit all 3 simultaneously and wait for each redirect.
     await Promise.all(
@@ -232,8 +238,9 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     // All 3 submissions must be in the DB.
     const { data: rows } = await supabase
       .from('submissions')
-      .select('name')
-      .in('name', names);
+      .select('first_name, last_name')
+      .eq('first_name', TEST_PREFIX)
+      .in('last_name', lastNames);
 
     expect((rows ?? []).length).toBe(3);
   });
@@ -244,7 +251,7 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
 
   test('CLIENT ERROR — invalid work_history JSON shows error banner', async ({ page }) => {
     await page.goto('/submissions/new');
-    await fillMinimalForm(page, `${TEST_PREFIX} E2E-Error-${Date.now()}`);
+    await fillMinimalForm(page, TEST_PREFIX, `E2E-Error-${Date.now()}`);
 
     // Overwrite work_history with invalid JSON to trigger the client-side guard.
     await page.fill('textarea[name="work_history"]', '{ not valid json ]]]');
@@ -271,10 +278,10 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     const { count: before } = await supabase
       .from('submissions')
       .select('id', { count: 'exact', head: true })
-      .ilike('name', `${TEST_PREFIX}%`);
+      .ilike('first_name', `${TEST_PREFIX}%`);
 
     await page.goto('/submissions/new');
-    await fillMinimalForm(page, `${TEST_PREFIX} E2E-Cancel-${Date.now()}`);
+    await fillMinimalForm(page, TEST_PREFIX, `E2E-Cancel-${Date.now()}`);
 
     // Click Cancel instead of submitting.
     await page.click('button[type="button"]'); // "Cancel" button
@@ -283,7 +290,7 @@ test.describe('Phase 4 — Full-Stack Server Actions (E2E)', () => {
     const { count: after } = await supabase
       .from('submissions')
       .select('id', { count: 'exact', head: true })
-      .ilike('name', `${TEST_PREFIX}%`);
+      .ilike('first_name', `${TEST_PREFIX}%`);
 
     expect(after).toBe(before);
   });

@@ -50,7 +50,8 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
 
     expect(error).toBeNull();
     expect(row).not.toBeNull();
-    expect(row.name).toBe(payload.name);
+    expect(row.first_name).toBe(payload.first_name);
+    expect(row.last_name).toBe(payload.last_name);
     expect(row.status).toBe('received');
     expect(row.age).toBe(28);
     expect(row.location).toBe('Manila, Philippines');
@@ -126,7 +127,7 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     for (let i = 0; i < 3; i++) {
       const id = await insertSubmission(
         supabase,
-        makePayload({ name: `__STRESS_TEST__ Page-${i}-${Date.now()}` })
+        makePayload({ last_name: `Page-${i}-${Date.now()}` })
       );
       inserted.push(id);
       // Small pause so timestamps are distinct on the free tier.
@@ -136,8 +137,8 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     // Fetch first page (2 rows) ordered newest-first.
     const { data: page1, error: e1 } = await supabase
       .from('submissions')
-      .select('id, name, created_at')
-      .ilike('name', '__STRESS_TEST__ Page-%')
+      .select('id, first_name, last_name, created_at')
+      .ilike('last_name', 'Page-%')
       .order('created_at', { ascending: false })
       .range(0, 1);
 
@@ -153,8 +154,8 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     // Fetch second page (1 row).
     const { data: page2, error: e2 } = await supabase
       .from('submissions')
-      .select('id, name, created_at')
-      .ilike('name', '__STRESS_TEST__ Page-%')
+      .select('id, first_name, last_name, created_at')
+      .ilike('last_name', 'Page-%')
       .order('created_at', { ascending: false })
       .range(2, 2);
 
@@ -178,11 +179,12 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     const newSkillIds = (skillDefs ?? []).map((s: { id: number }) => s.id);
 
     // Update the row (mirrors updateSubmission action, minus redirect).
-    const updatedName = `__STRESS_TEST__ Updated-${Date.now()}`;
+    const updatedLastName = `Updated-${Date.now()}`;
     const { error: updateError } = await supabase
       .from('submissions')
       .update({
-        name: updatedName,
+        first_name: '__STRESS_TEST__',
+        last_name: updatedLastName,
         status: 'processed',
         pay_rate: 999,
         pay_period: 'month',
@@ -210,7 +212,8 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
       .single();
 
     expect(readErr).toBeNull();
-    expect(updated.name).toBe(updatedName);
+    expect(updated.first_name).toBe('__STRESS_TEST__');
+    expect(updated.last_name).toBe(updatedLastName);
     expect(updated.status).toBe('processed');
     expect(updated.pay_rate).toBe(999);
     expect(updated.pay_period).toBe('month');
