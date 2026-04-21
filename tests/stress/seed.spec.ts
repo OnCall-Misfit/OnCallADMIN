@@ -47,8 +47,8 @@ const SKILL_DEFS = [
   { category: 'type_of_care', name: 'Special Needs / Pediatric' },
   { category: 'type_of_care', name: 'Post-Surgical / Orthopedic Recovery' },
   // life_skill (8)
-  { category: 'life_skill', name: 'Bathing, Grooming & Personal Hygiene' },
-  { category: 'life_skill', name: 'Lifting, Transferring & Repositioning' },
+  { category: 'life_skill', name: 'Bathing & Grooming & Personal Hygiene' },
+  { category: 'life_skill', name: 'Lifting & Transferring & Repositioning' },
   { category: 'life_skill', name: 'Toileting & Diaper Changing' },
   { category: 'life_skill', name: 'Feeding & Meal Preparation' },
   { category: 'life_skill', name: 'Companionship & Supervision' },
@@ -76,7 +76,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 800, pay_period: 'day' as const,
-    availability: 'immediate' as const,
+    availability: 'Immediately / ASAP',
     skillNames: ['General Elderly Care / Companionship', "Dementia / Alzheimer's", 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Light Housekeeping & Errands'],
   },
   {
@@ -93,8 +93,8 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 650, pay_period: 'day' as const,
-    availability: 'this_week' as const,
-    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Wound & Bedsore Care', 'Vital Signs & Blood Sugar Monitoring', 'Bathing, Grooming & Personal Hygiene'],
+    availability: '1 week notice',
+    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Wound & Bedsore Care', 'Vital Signs & Blood Sugar Monitoring', 'Bathing & Grooming & Personal Hygiene'],
   },
   {
     first_name: 'Ana', last_name: 'Dela Cruz',
@@ -111,7 +111,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1200, pay_period: 'day' as const,
-    availability: 'flexible' as const,
+    availability: '2 weeks notice',
     skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
@@ -128,8 +128,8 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 600, pay_period: 'day' as const,
-    availability: 'immediate' as const,
-    skillNames: ['Special Needs / Pediatric', 'Bedridden / Total Mobility Assistance', 'Lifting, Transferring & Repositioning', 'Light Housekeeping & Errands'],
+    availability: 'Immediately / ASAP',
+    skillNames: ['Special Needs / Pediatric', 'Bedridden / Total Mobility Assistance', 'Lifting & Transferring & Repositioning', 'Light Housekeeping & Errands'],
   },
   {
     first_name: 'Ligaya', last_name: 'Fernandez',
@@ -145,7 +145,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1000, pay_period: 'day' as const,
-    availability: 'this_week' as const,
+    availability: '1 week notice',
     skillNames: ['Cancer / Palliative / Hospice Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Respiratory Support (Oxygen & Nebulizer)', 'Vital Signs & Blood Sugar Monitoring', 'Companionship & Supervision'],
   },
   {
@@ -162,7 +162,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 500, pay_period: 'day' as const,
-    availability: 'immediate' as const,
+    availability: 'Immediately / ASAP',
     skillNames: ['General Elderly Care / Companionship', 'Light Housekeeping & Errands', 'Feeding & Meal Preparation', 'Companionship & Supervision'],
   },
   {
@@ -180,7 +180,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1500, pay_period: 'day' as const,
-    availability: 'flexible' as const,
+    availability: '2 weeks notice',
     skillNames: ["Dementia / Alzheimer's", 'Bedridden / Total Mobility Assistance', 'Stroke / Post-Stroke Care', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)', 'Respiratory Support (Oxygen & Nebulizer)'],
   },
   {
@@ -197,8 +197,8 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 700, pay_period: 'day' as const,
-    availability: 'this_week' as const,
-    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Vital Signs & Blood Sugar Monitoring', 'Medication Administration & Management', 'Lifting, Transferring & Repositioning', 'Airway Management (Tracheostomy & Suctioning)'],
+    availability: '1 week notice',
+    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Vital Signs & Blood Sugar Monitoring', 'Medication Administration & Management', 'Lifting & Transferring & Repositioning', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
     first_name: 'Marites', last_name: 'Soriano',
@@ -214,7 +214,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 580, pay_period: 'day' as const,
-    availability: 'immediate' as const,
+    availability: 'Immediately / ASAP',
     skillNames: ['Special Needs / Pediatric', 'Feeding & Meal Preparation', 'Companionship & Supervision', 'Light Housekeeping & Errands'],
   },
   {
@@ -232,7 +232,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1800, pay_period: 'day' as const,
-    availability: 'flexible' as const,
+    availability: '2 weeks notice',
     skillNames: ['Wound & Bedsore Care', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Post-Surgical / Orthopedic Recovery', 'Airway Management (Tracheostomy & Suctioning)', 'Vital Signs & Blood Sugar Monitoring'],
   },
   {
@@ -249,7 +249,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 950, pay_period: 'day' as const,
-    availability: 'this_week' as const,
+    availability: '1 week notice',
     skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Feeding & Meal Preparation', 'Light Housekeeping & Errands'],
   },
   {
@@ -265,8 +265,8 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 480, pay_period: 'day' as const,
-    availability: 'immediate' as const,
-    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Bathing, Grooming & Personal Hygiene', 'Lifting, Transferring & Repositioning', 'Companionship & Supervision'],
+    availability: 'Immediately / ASAP',
+    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Bathing & Grooming & Personal Hygiene', 'Lifting & Transferring & Repositioning', 'Companionship & Supervision'],
   },
   {
     first_name: 'Bernardo', last_name: 'Pascual',
@@ -283,7 +283,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1400, pay_period: 'day' as const,
-    availability: 'flexible' as const,
+    availability: '2 weeks notice',
     skillNames: ['General Elderly Care / Companionship', 'Cancer / Palliative / Hospice Care', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Respiratory Support (Oxygen & Nebulizer)', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
   {
@@ -300,8 +300,8 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 560, pay_period: 'day' as const,
-    availability: 'immediate' as const,
-    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Feeding & Meal Preparation', 'Medication Administration & Management', 'Bathing, Grooming & Personal Hygiene'],
+    availability: 'Immediately / ASAP',
+    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Feeding & Meal Preparation', 'Medication Administration & Management', 'Bathing & Grooming & Personal Hygiene'],
   },
   {
     first_name: 'Ricardo', last_name: 'Villanueva',
@@ -318,7 +318,7 @@ const PROFILES = [
     ],
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1100, pay_period: 'day' as const,
-    availability: 'this_week' as const,
+    availability: '1 week notice',
     skillNames: ['Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Wound & Bedsore Care', 'Medication Administration & Management', 'Airway Management (Tracheostomy & Suctioning)', 'Kidney Disease / Dialysis Patient', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
 ] as const;

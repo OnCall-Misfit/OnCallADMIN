@@ -25,7 +25,7 @@ export interface Submission {
   updated_at: string;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: 'immediate' | 'this_week' | 'flexible' | null;
+  availability: string | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
   avatar_url: string | null;
 }
@@ -67,7 +67,7 @@ export interface SubmissionPayload {
   error_message: string | null;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: 'immediate' | 'this_week' | 'flexible' | null;
+  availability: string | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
   avatar_url: string | null;
   skill_ids: number[];

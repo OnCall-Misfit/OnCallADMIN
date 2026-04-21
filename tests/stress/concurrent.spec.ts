@@ -344,7 +344,7 @@ test.describe('Phase 2 — Concurrent Load', () => {
               // Vary the data per worker so updates are meaningful.
               status: 'received',
               pay_rate: 400 + workerId * 50,
-              availability: (['immediate', 'this_week', 'flexible'] as const)[workerId % 3],
+              availability: (['Immediately / ASAP', '1 week notice', '2 weeks notice'])[workerId % 3],
               years_of_experience: workerId + i,
             })
           );

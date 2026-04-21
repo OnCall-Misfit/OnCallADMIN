@@ -282,7 +282,7 @@ test.describe('Phase 3 — Edge Cases & Error Conditions', () => {
   test('ALL enum permutations — every valid combination inserts cleanly', async () => {
     const statuses = ['received', 'processed', 'failed'] as const;
     const payPeriods = ['hour', 'day', 'month'] as const;
-    const availabilities = ['immediate', 'this_week', 'flexible'] as const;
+    const availabilities = ['Immediately / ASAP', '1-3 days notice', '1 week notice', '2 weeks notice'];
 
     const insertErrors: string[] = [];
 

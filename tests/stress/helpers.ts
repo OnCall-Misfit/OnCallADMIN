@@ -79,7 +79,7 @@ export interface SubmissionPayload {
   error_message: string | null;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: 'immediate' | 'this_week' | 'flexible' | null;
+  availability: string | null;
   avatar_url: string | null;
   /** Not a DB column — consumed by insertSubmission() and stripped before insert. */
   skill_ids: number[];
@@ -126,7 +126,7 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
     error_message: null,
     pay_rate: 600,
     pay_period: 'day',
-    availability: 'immediate',
+    availability: 'Immediately / ASAP',
     avatar_url: null,
     skill_ids: [],
     ...overrides,

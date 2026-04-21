@@ -91,7 +91,7 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
       ],
       pay_rate: 750,
       pay_period: 'hour',
-      availability: 'this_week',
+      availability: '1 week notice',
       has_nbi_clearance: true,
       years_of_experience: 5,
     });
@@ -188,7 +188,7 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
         status: 'processed',
         pay_rate: 999,
         pay_period: 'month',
-        availability: 'flexible',
+        availability: '2 weeks notice',
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);
@@ -217,7 +217,7 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
     expect(updated.status).toBe('processed');
     expect(updated.pay_rate).toBe(999);
     expect(updated.pay_period).toBe('month');
-    expect(updated.availability).toBe('flexible');
+    expect(updated.availability).toBe('2 weeks notice');
 
     // Skills replaced correctly.
     const { data: skills } = await supabase

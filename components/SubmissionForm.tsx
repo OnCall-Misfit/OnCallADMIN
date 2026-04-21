@@ -34,6 +34,7 @@ type FormState = {
   pay_rate: string;
   pay_period: string;
   availability: string;
+  availability_other: string;
   work_setup: string;
   avatar_url: string;
 };
@@ -43,6 +44,13 @@ const CATEGORY_LABELS: Record<string, string> = {
   type_of_care: 'Type of Care',
   life_skill: 'Life Skills',
 };
+
+const AVAILABILITY_OPTIONS = [
+  'Immediately / ASAP',
+  '1-3 days notice',
+  '1 week notice',
+  '2 weeks notice',
+] as const;
 
 const input =
   'border border-gray-300 rounded px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white';
@@ -61,6 +69,14 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
   const fileInputRef = useRef<HTMLInputElement>(null);
   /** Incremented each time a new file is selected; used to discard stale onload results. */
   const processingGenerationRef = useRef(0);
+
+  // Determine the initial availability select value and any free-text 'Other' value.
+  // If the stored value is not one of the presets (e.g. an old enum or custom text),
+  // the select defaults to 'Other' and the raw value is preserved in availability_other.
+  const storedAvail = submission?.availability ?? '';
+  const availIsPreset =
+    storedAvail === '' ||
+    (AVAILABILITY_OPTIONS as readonly string[]).includes(storedAvail);
 
   const [form, setForm] = useState<FormState>({
     first_name: submission?.first_name ?? '',
@@ -87,7 +103,8 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
     error_message: submission?.error_message ?? '',
     pay_rate: submission?.pay_rate != null ? String(submission.pay_rate) : '',
     pay_period: submission?.pay_period ?? '',
-    availability: submission?.availability ?? '',
+    availability: availIsPreset ? storedAvail : 'Other',
+    availability_other: availIsPreset ? '' : storedAvail,
     work_setup: submission?.work_setup ?? '',
     avatar_url: submission?.avatar_url ?? '',
   });
@@ -311,11 +328,9 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
       error_message: form.error_message || null,
       pay_rate: form.pay_rate ? parseFloat(form.pay_rate) : null,
       pay_period: (form.pay_period || null) as 'hour' | 'day' | 'month' | null,
-      availability: (form.availability || null) as
-        | 'immediate'
-        | 'this_week'
-        | 'flexible'
-        | null,
+      availability: form.availability === 'Other'
+        ? (form.availability_other || null)
+        : (form.availability || null),
       work_setup: (form.work_setup || null) as
         | 'stay-in'
         | 'stay-out'
@@ -637,7 +652,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
             </select>
           </div>
           <div>
-            <label className={label}>Availability</label>
+            <label className={label}>Availability (When can you start?)</label>
             <select
               name="availability"
               value={form.availability}
@@ -645,10 +660,21 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
               className={input}
             >
               <option value="">— none —</option>
-              <option value="immediate">immediate</option>
-              <option value="this_week">this_week</option>
-              <option value="flexible">flexible</option>
+              <option value="Immediately / ASAP">Immediately / ASAP</option>
+              <option value="1-3 days notice">1-3 days notice</option>
+              <option value="1 week notice">1 week notice</option>
+              <option value="2 weeks notice">2 weeks notice</option>
+              <option value="Other">Other</option>
             </select>
+            {form.availability === 'Other' && (
+              <input
+                name="availability_other"
+                value={form.availability_other}
+                onChange={handleChange}
+                placeholder="Specify when you can start…"
+                className={`${input} mt-2`}
+              />
+            )}
           </div>
           <div>
             <label className={label}>Work Setup</label>
