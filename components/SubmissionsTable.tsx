@@ -23,7 +23,9 @@ export default function SubmissionsTable({ submissions }: Props) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const filtered = search
-    ? submissions.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()))
+    ? submissions.filter((s) =>
+        `${s.first_name} ${s.last_name}`.toLowerCase().includes(search.toLowerCase())
+      )
     : submissions;
 
   async function handleDelete(id: string, name: string) {
@@ -86,7 +88,7 @@ export default function SubmissionsTable({ submissions }: Props) {
             ) : (
               filtered.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{s.name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">{s.first_name} {s.last_name}</td>
                   <td className="px-4 py-3 text-gray-600">{s.age}</td>
                   <td className="px-4 py-3 text-gray-600">{s.location}</td>
                   <td className="px-4 py-3">
@@ -115,8 +117,8 @@ export default function SubmissionsTable({ submissions }: Props) {
                     >
                       Edit
                     </Link>
-                    <button
-                      onClick={() => handleDelete(s.id, s.name)}
+                     <button
+                      onClick={() => handleDelete(s.id, `${s.first_name} ${s.last_name}`)}
                       disabled={deletingId === s.id}
                       className="text-red-500 hover:text-red-700 text-xs disabled:opacity-40 cursor-pointer"
                     >

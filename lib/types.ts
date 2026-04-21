@@ -1,7 +1,8 @@
 export interface Submission {
   id: string;
   idempotency_key: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   age: number;
   location: string;
   contact_number: string;
@@ -25,6 +26,7 @@ export interface Submission {
   pay_period: 'hour' | 'day' | 'month' | null;
   availability: 'immediate' | 'this_week' | 'flexible' | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
+  avatar_url: string | null;
 }
 
 export interface WorkHistoryEntry {
@@ -42,7 +44,8 @@ export interface SkillDefinition {
 }
 
 export interface SubmissionPayload {
-  name: string;
+  first_name: string;
+  last_name: string;
   age: number;
   location: string;
   contact_number: string;
@@ -64,5 +67,6 @@ export interface SubmissionPayload {
   pay_period: 'hour' | 'day' | 'month' | null;
   availability: 'immediate' | 'this_week' | 'flexible' | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
+  avatar_url: string | null;
   skill_ids: number[];
 }

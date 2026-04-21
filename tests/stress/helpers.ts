@@ -21,7 +21,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Every test row's name starts with this prefix for easy bulk-cleanup. */
+/** Every test row's first_name is set to this prefix for easy bulk-cleanup. */
 export const TEST_PREFIX = '__STRESS_TEST__';
 
 // ---------------------------------------------------------------------------
@@ -57,7 +57,8 @@ export interface WorkHistoryEntry {
 }
 
 export interface SubmissionPayload {
-  name: string;
+  first_name: string;
+  last_name: string;
   age: number;
   location: string;
   contact_number: string;
@@ -78,6 +79,7 @@ export interface SubmissionPayload {
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
   availability: 'immediate' | 'this_week' | 'flexible' | null;
+  avatar_url: string | null;
   /** Not a DB column — consumed by insertSubmission() and stripped before insert. */
   skill_ids: number[];
 }
@@ -94,7 +96,8 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
   // Combine timestamp + random suffix so rapid calls in a loop stay unique.
   const suffix = `${Date.now()}-${randomBytes(3).toString('hex')}`;
   return {
-    name: `${TEST_PREFIX} User ${suffix}`,
+    first_name: TEST_PREFIX,
+    last_name: `User ${suffix}`,
     age: 28,
     location: 'Manila, Philippines',
     contact_number: '+63 912 345 6789',
@@ -122,6 +125,7 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
     pay_rate: 600,
     pay_period: 'day',
     availability: 'immediate',
+    avatar_url: null,
     skill_ids: [],
     ...overrides,
   };
@@ -130,7 +134,7 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
 /** Returns `count` unique payloads. */
 export function makeBulkPayloads(count: number): SubmissionPayload[] {
   return Array.from({ length: count }, (_, i) =>
-    makePayload({ name: `${TEST_PREFIX} Bulk-${i}-${Date.now()}-${randomBytes(2).toString('hex')}` })
+    makePayload({ last_name: `Bulk-${i}-${Date.now()}-${randomBytes(2).toString('hex')}` })
   );
 }
 
@@ -196,7 +200,7 @@ export async function cleanupTestData(supabase: SupabaseClient): Promise<void> {
   const { data: rows } = await supabase
     .from('submissions')
     .select('id')
-    .ilike('name', `${TEST_PREFIX}%`);
+    .ilike('first_name', `${TEST_PREFIX}%`);
 
   if (!rows || rows.length === 0) return;
 

@@ -10,7 +10,7 @@
  * Does NOT use the __STRESS_TEST__ prefix, so cleanup scripts won't touch it.
  *
  * What it seeds:
- *   1. skill_definitions  — 21 skills across 3 categories (if table is empty)
+ *   1. skill_definitions  — 26 skills across 3 categories (if table is empty)
  *   2. submissions        — 15 realistic caregiver profiles
  *   3. caregiver_skills   — skill assignments per profile
  */
@@ -26,30 +26,35 @@ const supabase = getSupabaseClient();
 // ---------------------------------------------------------------------------
 
 const SKILL_DEFS = [
-  // nursing_skill
-  { category: 'nursing_skill', name: 'Wound Care' },
-  { category: 'nursing_skill', name: 'IV Therapy' },
-  { category: 'nursing_skill', name: 'Medication Administration' },
-  { category: 'nursing_skill', name: 'Vital Signs Monitoring' },
-  { category: 'nursing_skill', name: 'Catheter Care' },
-  { category: 'nursing_skill', name: 'Blood Glucose Monitoring' },
-  { category: 'nursing_skill', name: 'Oxygen Therapy' },
-  // type_of_care
-  { category: 'type_of_care', name: 'Elderly Care' },
-  { category: 'type_of_care', name: 'Post-operative Care' },
-  { category: 'type_of_care', name: 'Pediatric Care' },
-  { category: 'type_of_care', name: 'Stroke Care' },
-  { category: 'type_of_care', name: "Dementia / Alzheimer's Care" },
-  { category: 'type_of_care', name: 'Palliative / Cancer Care' },
-  { category: 'type_of_care', name: 'Bedridden Patient Care' },
-  // life_skill
-  { category: 'life_skill', name: 'Cooking (Special Diet)' },
-  { category: 'life_skill', name: 'Housekeeping' },
-  { category: 'life_skill', name: 'Laundry & Ironing' },
-  { category: 'life_skill', name: 'First Aid' },
-  { category: 'life_skill', name: 'CPR Certified' },
-  { category: 'life_skill', name: 'Driving' },
-  { category: 'life_skill', name: 'Companionship & Social Support' },
+  // nursing_skill (9)
+  { category: 'nursing_skill', name: 'Vital Signs & Blood Sugar Monitoring' },
+  { category: 'nursing_skill', name: 'NGT / PEG Tube Feeding' },
+  { category: 'nursing_skill', name: 'Medication Administration & Management' },
+  { category: 'nursing_skill', name: 'Airway Management (Tracheostomy & Suctioning)' },
+  { category: 'nursing_skill', name: 'Catheter Care (Foley / IFC)' },
+  { category: 'nursing_skill', name: 'Injections & IV Therapy (Requires RN)' },
+  { category: 'nursing_skill', name: 'Wound & Bedsore Care' },
+  { category: 'nursing_skill', name: 'Respiratory Support (Oxygen & Nebulizer)' },
+  { category: 'nursing_skill', name: 'Stoma / Colostomy Care' },
+  // type_of_care (9)
+  { category: 'type_of_care', name: 'Stroke / Post-Stroke Care' },
+  { category: 'type_of_care', name: "Dementia / Alzheimer's" },
+  { category: 'type_of_care', name: 'Bedridden / Total Mobility Assistance' },
+  { category: 'type_of_care', name: 'General Elderly Care / Companionship' },
+  { category: 'type_of_care', name: 'Newborn / Infant Care' },
+  { category: 'type_of_care', name: 'Kidney Disease / Dialysis Patient' },
+  { category: 'type_of_care', name: 'Cancer / Palliative / Hospice Care' },
+  { category: 'type_of_care', name: 'Special Needs / Pediatric' },
+  { category: 'type_of_care', name: 'Post-Surgical / Orthopedic Recovery' },
+  // life_skill (8)
+  { category: 'life_skill', name: 'Bathing, Grooming & Personal Hygiene' },
+  { category: 'life_skill', name: 'Lifting, Transferring & Repositioning' },
+  { category: 'life_skill', name: 'Toileting & Diaper Changing' },
+  { category: 'life_skill', name: 'Feeding & Meal Preparation' },
+  { category: 'life_skill', name: 'Companionship & Supervision' },
+  { category: 'life_skill', name: 'Physical Therapy & Exercise Assistance' },
+  { category: 'life_skill', name: 'Light Housekeeping & Errands' },
+  { category: 'life_skill', name: 'Medical Escort / Hospital Watcher (Bantay)' },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -58,7 +63,7 @@ const SKILL_DEFS = [
 
 const PROFILES = [
   {
-    name: 'Maria Santos',
+    first_name: 'Maria', last_name: 'Santos',
     age: 34,
     location: 'Quezon City, Metro Manila',
     contact_number: '+63 917 123 4567',
@@ -71,10 +76,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 800, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Elderly Care', "Dementia / Alzheimer's Care", 'Medication Administration', 'Vital Signs Monitoring', 'Housekeeping'],
+    skillNames: ['General Elderly Care / Companionship', "Dementia / Alzheimer's", 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Light Housekeeping & Errands'],
   },
   {
-    name: 'Jose Reyes',
+    first_name: 'Jose', last_name: 'Reyes',
     age: 28,
     location: 'Cebu City, Cebu',
     contact_number: '+63 918 234 5678',
@@ -87,10 +92,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 650, pay_period: 'day' as const,
     availability: 'this_week' as const,
-    skillNames: ['Post-operative Care', 'Wound Care', 'Vital Signs Monitoring', 'First Aid'],
+    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Wound & Bedsore Care', 'Vital Signs & Blood Sugar Monitoring', 'Bathing, Grooming & Personal Hygiene'],
   },
   {
-    name: 'Ana Dela Cruz',
+    first_name: 'Ana', last_name: 'Dela Cruz',
     age: 42,
     location: 'Davao City, Davao del Sur',
     contact_number: '+63 919 345 6789',
@@ -104,10 +109,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1200, pay_period: 'day' as const,
     availability: 'flexible' as const,
-    skillNames: ['Stroke Care', 'Elderly Care', 'IV Therapy', 'Catheter Care', 'Medication Administration', 'Vital Signs Monitoring', 'CPR Certified'],
+    skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
-    name: 'Rodrigo Bautista',
+    first_name: 'Rodrigo', last_name: 'Bautista',
     age: 31,
     location: 'Caloocan, Metro Manila',
     contact_number: '+63 920 456 7890',
@@ -120,10 +125,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 600, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Pediatric Care', 'Bedridden Patient Care', 'First Aid', 'Housekeeping'],
+    skillNames: ['Special Needs / Pediatric', 'Bedridden / Total Mobility Assistance', 'Lifting, Transferring & Repositioning', 'Light Housekeeping & Errands'],
   },
   {
-    name: 'Ligaya Fernandez',
+    first_name: 'Ligaya', last_name: 'Fernandez',
     age: 38,
     location: 'Pasig, Metro Manila',
     contact_number: '+63 921 567 8901',
@@ -136,10 +141,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1000, pay_period: 'day' as const,
     availability: 'this_week' as const,
-    skillNames: ['Palliative / Cancer Care', 'Elderly Care', 'Medication Administration', 'Oxygen Therapy', 'Blood Glucose Monitoring', 'Companionship & Social Support'],
+    skillNames: ['Cancer / Palliative / Hospice Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Respiratory Support (Oxygen & Nebulizer)', 'Vital Signs & Blood Sugar Monitoring', 'Companionship & Supervision'],
   },
   {
-    name: 'Emmanuel Castillo',
+    first_name: 'Emmanuel', last_name: 'Castillo',
     age: 25,
     location: 'Antipolo, Rizal',
     contact_number: '+63 922 678 9012',
@@ -152,10 +157,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 500, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Elderly Care', 'Housekeeping', 'Cooking (Special Diet)', 'Companionship & Social Support'],
+    skillNames: ['General Elderly Care / Companionship', 'Light Housekeeping & Errands', 'Feeding & Meal Preparation', 'Companionship & Supervision'],
   },
   {
-    name: 'Rosario Mendoza',
+    first_name: 'Rosario', last_name: 'Mendoza',
     age: 47,
     location: 'Iloilo City, Iloilo',
     contact_number: '+63 923 789 0123',
@@ -169,10 +174,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1500, pay_period: 'day' as const,
     availability: 'flexible' as const,
-    skillNames: ["Dementia / Alzheimer's Care", 'Bedridden Patient Care', 'Stroke Care', 'Catheter Care', 'Medication Administration', 'Vital Signs Monitoring', 'CPR Certified', 'Blood Glucose Monitoring'],
+    skillNames: ["Dementia / Alzheimer's", 'Bedridden / Total Mobility Assistance', 'Stroke / Post-Stroke Care', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)', 'Respiratory Support (Oxygen & Nebulizer)'],
   },
   {
-    name: 'Danilo Aquino',
+    first_name: 'Danilo', last_name: 'Aquino',
     age: 33,
     location: 'Taguig, Metro Manila',
     contact_number: '+63 924 890 1234',
@@ -185,10 +190,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 700, pay_period: 'day' as const,
     availability: 'this_week' as const,
-    skillNames: ['Post-operative Care', 'Vital Signs Monitoring', 'Medication Administration', 'First Aid', 'CPR Certified'],
+    skillNames: ['Post-Surgical / Orthopedic Recovery', 'Vital Signs & Blood Sugar Monitoring', 'Medication Administration & Management', 'Lifting, Transferring & Repositioning', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
-    name: 'Marites Soriano',
+    first_name: 'Marites', last_name: 'Soriano',
     age: 29,
     location: 'Las Piñas, Metro Manila',
     contact_number: '+63 925 901 2345',
@@ -201,10 +206,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 580, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Pediatric Care', 'Cooking (Special Diet)', 'Companionship & Social Support', 'Housekeeping'],
+    skillNames: ['Special Needs / Pediatric', 'Feeding & Meal Preparation', 'Companionship & Supervision', 'Light Housekeeping & Errands'],
   },
   {
-    name: 'Eduardo Flores',
+    first_name: 'Eduardo', last_name: 'Flores',
     age: 52,
     location: 'Cagayan de Oro City, Misamis Oriental',
     contact_number: '+63 926 012 3456',
@@ -218,10 +223,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1800, pay_period: 'day' as const,
     availability: 'flexible' as const,
-    skillNames: ['Wound Care', 'IV Therapy', 'Catheter Care', 'Medication Administration', 'Post-operative Care', 'CPR Certified', 'Vital Signs Monitoring'],
+    skillNames: ['Wound & Bedsore Care', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Post-Surgical / Orthopedic Recovery', 'Airway Management (Tracheostomy & Suctioning)', 'Vital Signs & Blood Sugar Monitoring'],
   },
   {
-    name: 'Concepcion Ramos',
+    first_name: 'Concepcion', last_name: 'Ramos',
     age: 36,
     location: 'Mandaue City, Cebu',
     contact_number: '+63 927 123 4560',
@@ -234,10 +239,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 950, pay_period: 'day' as const,
     availability: 'this_week' as const,
-    skillNames: ['Stroke Care', 'Elderly Care', 'Medication Administration', 'Cooking (Special Diet)', 'Laundry & Ironing'],
+    skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Feeding & Meal Preparation', 'Light Housekeeping & Errands'],
   },
   {
-    name: 'Lovely Torres',
+    first_name: 'Lovely', last_name: 'Torres',
     age: 23,
     location: 'Mandaluyong, Metro Manila',
     contact_number: '+63 928 234 5601',
@@ -249,10 +254,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 480, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Vital Signs Monitoring', 'First Aid', 'CPR Certified', 'Companionship & Social Support'],
+    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Bathing, Grooming & Personal Hygiene', 'Lifting, Transferring & Repositioning', 'Companionship & Supervision'],
   },
   {
-    name: 'Bernardo Pascual',
+    first_name: 'Bernardo', last_name: 'Pascual',
     age: 44,
     location: 'General Santos City, South Cotabato',
     contact_number: '+63 929 345 6702',
@@ -266,10 +271,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1400, pay_period: 'day' as const,
     availability: 'flexible' as const,
-    skillNames: ['Elderly Care', 'Palliative / Cancer Care', 'Medication Administration', 'Blood Glucose Monitoring', 'Oxygen Therapy', 'Driving'],
+    skillNames: ['General Elderly Care / Companionship', 'Cancer / Palliative / Hospice Care', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Respiratory Support (Oxygen & Nebulizer)', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
   {
-    name: 'Shiela Navarro',
+    first_name: 'Shiela', last_name: 'Navarro',
     age: 27,
     location: 'Bacoor, Cavite',
     contact_number: '+63 930 456 7803',
@@ -282,10 +287,10 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 560, pay_period: 'day' as const,
     availability: 'immediate' as const,
-    skillNames: ['Blood Glucose Monitoring', 'Cooking (Special Diet)', 'Medication Administration', 'Vital Signs Monitoring'],
+    skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Feeding & Meal Preparation', 'Medication Administration & Management', 'Bathing, Grooming & Personal Hygiene'],
   },
   {
-    name: 'Ricardo Villanueva',
+    first_name: 'Ricardo', last_name: 'Villanueva',
     age: 39,
     location: 'Batangas City, Batangas',
     contact_number: '+63 931 567 8904',
@@ -299,7 +304,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1100, pay_period: 'day' as const,
     availability: 'this_week' as const,
-    skillNames: ['IV Therapy', 'Catheter Care', 'Wound Care', 'Medication Administration', 'CPR Certified', 'First Aid', 'Driving'],
+    skillNames: ['Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Wound & Bedsore Care', 'Medication Administration & Management', 'Airway Management (Tracheostomy & Suctioning)', 'Kidney Disease / Dialysis Patient', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
 ] as const;
 
@@ -313,7 +318,7 @@ test.describe('Database Seed', () => {
     const { count: existingCount } = await supabase
       .from('submissions')
       .select('id', { count: 'exact', head: true })
-      .not('name', 'ilike', '__STRESS_TEST__%');
+      .not('first_name', 'ilike', '__STRESS_TEST__%');
 
     if ((existingCount ?? 0) > 0) {
       console.log(`\n  [SEED] Database already has ${existingCount} non-test profiles. Skipping seed.`);
@@ -394,7 +399,7 @@ test.describe('Database Seed', () => {
           .single();
 
         if (insertError) {
-          console.log(`  [SEED] ✗ ${profile.name}: ${insertError.message}`);
+          console.log(`  [SEED] ✗ ${profile.first_name} ${profile.last_name}: ${insertError.message}`);
           errorCount++;
           continue;
         }
@@ -410,10 +415,10 @@ test.describe('Database Seed', () => {
             .insert(skillIds.map((skill_id) => ({ submission_id: created!.id, skill_id })));
         }
 
-        console.log(`  [SEED] ✓ ${profile.name} (${profile.years_of_experience} yrs exp, ${skillIds.length} skills)`);
+        console.log(`  [SEED] ✓ ${profile.first_name} ${profile.last_name} (${profile.years_of_experience} yrs exp, ${skillIds.length} skills)`);
         successCount++;
       } catch (err) {
-        console.log(`  [SEED] ✗ ${profile.name}: ${err}`);
+        console.log(`  [SEED] ✗ ${profile.first_name} ${profile.last_name}: ${err}`);
         errorCount++;
       }
     }
@@ -426,7 +431,7 @@ test.describe('Database Seed', () => {
     const { count: finalCount } = await supabase
       .from('submissions')
       .select('id', { count: 'exact', head: true })
-      .not('name', 'ilike', '__STRESS_TEST__%');
+      .not('first_name', 'ilike', '__STRESS_TEST__%');
 
     expect(finalCount).toBe(PROFILES.length);
     console.log(`  [SEED] Verified: ${finalCount} profiles in database.\n`);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Submission, SkillDefinition, SubmissionPayload, WorkHistoryEntry } from '@/lib/types';
 import { createSubmission, updateSubmission } from '@/lib/actions';
@@ -11,7 +11,8 @@ interface Props {
 }
 
 type FormState = {
-  name: string;
+  first_name: string;
+  last_name: string;
   age: string;
   location: string;
   contact_number: string;
@@ -33,6 +34,7 @@ type FormState = {
   pay_period: string;
   availability: string;
   work_setup: string;
+  avatar_url: string;
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -45,12 +47,23 @@ const input =
   'border border-gray-300 rounded px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white';
 const label = 'block text-xs font-medium text-gray-600 mb-1';
 
+/** Returns up to 2 initials from first and last name. */
+function getInitials(firstName: string, lastName: string): string {
+  const f = firstName.trim()[0]?.toUpperCase() ?? '';
+  const l = lastName.trim()[0]?.toUpperCase() ?? '';
+  return (f + l) || '?';
+}
+
 export default function SubmissionForm({ submission, skillDefinitions }: Props) {
   const router = useRouter();
   const isEditing = !!submission;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  /** Incremented each time a new file is selected; used to discard stale onload results. */
+  const processingGenerationRef = useRef(0);
 
   const [form, setForm] = useState<FormState>({
-    name: submission?.name ?? '',
+    first_name: submission?.first_name ?? '',
+    last_name: submission?.last_name ?? '',
     age: String(submission?.age ?? 18),
     location: submission?.location ?? '',
     contact_number: submission?.contact_number ?? '',
@@ -74,6 +87,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
     pay_period: submission?.pay_period ?? '',
     availability: submission?.availability ?? '',
     work_setup: submission?.work_setup ?? '',
+    avatar_url: submission?.avatar_url ?? '',
   });
 
   const [selectedSkills, setSelectedSkills] = useState<Set<number>>(
@@ -82,6 +96,18 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
 
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  // Avatar-specific state — the blob is only uploaded when the form is submitted.
+  const [avatarBlob, setAvatarBlob] = useState<Blob | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string>('');
+  const [avatarProcessing, setAvatarProcessing] = useState(false);
+
+  // Revoke the object URL when the component unmounts to avoid memory leaks.
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    };
+  }, [avatarPreviewUrl]);
 
   const groupedSkills = skillDefinitions.reduce<Record<string, SkillDefinition[]>>(
     (acc, skill) => {
@@ -109,6 +135,114 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
     });
   }
 
+  /**
+   * Fires a DELETE to /api/upload-avatar to remove the old file from storage.
+   * Non-fatal: a cleanup failure is logged but never shown to the admin as an
+   * error (we don't want a storage hiccup to block the UI).
+   */
+  async function deleteAvatarFromStorage(url: string): Promise<void> {
+    if (!url) return;
+    try {
+      await fetch('/api/upload-avatar', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+    } catch (err) {
+      console.warn('Avatar cleanup failed (non-fatal):', err);
+    }
+  }
+
+  /**
+   * Handles avatar file selection:
+   *  1. Center-crops the image to a square using a hidden canvas
+   *  2. Exports as WebP at 256×256 px (JPEG fallback for Safari < 16)
+   *  3. Stores the resulting blob + a local preview URL in state
+   *
+   * The actual upload to /api/upload-avatar is deferred to handleSubmit so
+   * that nothing is written to storage unless the admin saves the form.
+   */
+  function handleAvatarFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Bump the generation counter so any still-running onload for the
+    // previous file knows it is stale and must not update state.
+    const generation = ++processingGenerationRef.current;
+
+    // Revoke previous preview URL before creating a new one.
+    if (avatarPreviewUrl) {
+      URL.revokeObjectURL(avatarPreviewUrl);
+      setAvatarPreviewUrl('');
+    }
+
+    setAvatarProcessing(true);
+    setError(null);
+
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onerror = () => {
+      setError('Could not load the selected image.');
+      setAvatarProcessing(false);
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    img.onload = async () => {
+      // Center-crop to square, then scale to 256×256.
+      const size = Math.min(img.naturalWidth, img.naturalHeight);
+      const sx = (img.naturalWidth - size) / 2;
+      const sy = (img.naturalHeight - size) / 2;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        setError('Canvas not available — cannot process image.');
+        setAvatarProcessing(false);
+        URL.revokeObjectURL(objectUrl);
+        return;
+      }
+      ctx.drawImage(img, sx, sy, size, size, 0, 0, 256, 256);
+
+      // The source image objectUrl is no longer needed once drawn on canvas.
+      URL.revokeObjectURL(objectUrl);
+
+      // Try WebP first; fall back to JPEG for browsers that don't support
+      // WebP canvas encoding (Safari < 16).
+      const tryBlob = (mimeType: string, quality: number): Promise<Blob | null> =>
+        new Promise((resolve) => canvas.toBlob(resolve, mimeType, quality));
+
+      let blob = await tryBlob('image/webp', 0.85);
+      if (!blob || blob.size === 0) blob = await tryBlob('image/jpeg', 0.88);
+
+      if (!blob || blob.size === 0) {
+        setError('Failed to encode the image. Please try a different file.');
+        setAvatarProcessing(false);
+        return;
+      }
+
+      // Guard: if the user picked another file while this one was processing,
+      // discard this result — the newer onload will set the correct state.
+      if (processingGenerationRef.current !== generation) {
+        return; // stale — a newer file is being processed; drop this blob
+      }
+
+      // Store the processed blob and create a local preview URL.
+      // The upload happens in handleSubmit.
+      const previewUrl = URL.createObjectURL(blob);
+      setAvatarBlob(blob);
+      setAvatarPreviewUrl(previewUrl);
+      setAvatarProcessing(false);
+
+      // Reset the file input so the same file can be re-selected if needed.
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    img.src = objectUrl;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -124,8 +258,37 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
       return;
     }
 
+    // If a new avatar blob is pending, delete the old file first (if any),
+    // then upload the new one. This ensures stale CDN copies are replaced.
+    let finalAvatarUrl: string | null = form.avatar_url || null;
+    if (avatarBlob) {
+      if (form.avatar_url) {
+        await deleteAvatarFromStorage(form.avatar_url);
+      }
+      try {
+        const fd = new FormData();
+        fd.append('file', avatarBlob, 'avatar.webp');
+        if (submission?.id) fd.append('submissionId', submission.id);
+
+        const res = await fetch('/api/upload-avatar', { method: 'POST', body: fd });
+        const data = (await res.json()) as { url?: string; error?: string };
+
+        if (!res.ok || data.error) {
+          setError(`Avatar upload failed: ${data.error ?? res.statusText}`);
+          setPending(false);
+          return;
+        }
+        finalAvatarUrl = data.url ?? null;
+      } catch (err) {
+        setError(`Avatar upload failed: ${err instanceof Error ? err.message : String(err)}`);
+        setPending(false);
+        return;
+      }
+    }
+
     const payload: SubmissionPayload = {
-      name: form.name,
+      first_name: form.first_name,
+      last_name: form.last_name,
       age: parseInt(form.age),
       location: form.location,
       contact_number: form.contact_number,
@@ -155,6 +318,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
         | 'stay-out'
         | 'stay-in & stay-out'
         | null,
+      avatar_url: finalAvatarUrl,
       skill_ids: Array.from(selectedSkills),
     };
 
@@ -182,12 +346,120 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
           Basic Info
         </h2>
+
+        {/* ── Avatar ───────────────────────────────────── */}
+        <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
+          {/* Circle preview */}
+          <div className="relative flex-shrink-0">
+            {(avatarPreviewUrl || form.avatar_url) ? (
+              <img
+                src={avatarPreviewUrl || form.avatar_url}
+                alt="Avatar preview"
+                className="w-20 h-20 rounded-full object-cover border border-gray-200"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border border-gray-200">
+                <span className="text-xl font-semibold text-gray-500 select-none">
+                  {getInitials(form.first_name, form.last_name)}
+                </span>
+              </div>
+            )}
+            {/* Processing spinner overlay */}
+            {avatarProcessing && (
+              <div className="absolute inset-0 rounded-full bg-white/70 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 animate-spin text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Controls */}
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-medium text-gray-600">Profile Photo</p>
+            <p className="text-xs text-gray-400">
+              Any image — auto-cropped &amp; resized to 256×256 WebP
+            </p>
+            <div className="flex items-center gap-2">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarFileChange}
+                disabled={avatarProcessing || pending}
+              />
+              <button
+                type="button"
+                disabled={avatarProcessing || pending}
+                onClick={() => fileInputRef.current?.click()}
+                className="text-xs px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+              >
+                {avatarProcessing
+                  ? 'Processing…'
+                  : (avatarBlob || form.avatar_url)
+                  ? 'Change Photo'
+                  : 'Upload Photo'}
+              </button>
+              {(avatarBlob || form.avatar_url) && !avatarProcessing && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (avatarBlob) {
+                      // Pending blob — clear it locally; nothing was uploaded yet.
+                      URL.revokeObjectURL(avatarPreviewUrl);
+                      setAvatarBlob(null);
+                      setAvatarPreviewUrl('');
+                    } else if (form.avatar_url) {
+                      // Saved URL — remove the file from storage then clear state.
+                      await deleteAvatarFromStorage(form.avatar_url);
+                      setForm((prev) => ({ ...prev, avatar_url: '' }));
+                    }
+                  }}
+                  className="text-xs px-3 py-1.5 rounded border border-red-200 text-red-500 hover:bg-red-50 cursor-pointer"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Name / Age / Location / etc. ─────────────── */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={label}>Name *</label>
+            <label className={label}>First Name *</label>
             <input
-              name="name"
-              value={form.name}
+              name="first_name"
+              value={form.first_name}
+              onChange={handleChange}
+              className={input}
+              required
+            />
+          </div>
+          <div>
+            <label className={label}>Last Name *</label>
+            <input
+              name="last_name"
+              value={form.last_name}
               onChange={handleChange}
               className={input}
               required
