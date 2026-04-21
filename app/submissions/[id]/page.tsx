@@ -28,7 +28,7 @@ export default async function EditSubmissionPage({ params }: Props) {
     <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">{submission.name}</h1>
+          <h1 className="text-lg font-semibold text-gray-900">{submission.first_name} {submission.last_name}</h1>
           <p className="text-xs text-gray-400 mt-0.5 font-mono">{id}</p>
         </div>
         <Link href="/" className="text-xs text-gray-500 hover:text-gray-700">
