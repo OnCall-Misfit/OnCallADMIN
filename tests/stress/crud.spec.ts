@@ -86,8 +86,8 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
   test('READ single — all fields round-trip, JSONB work_history intact', async () => {
     const payload = makePayload({
       work_history: [
-        { employer: 'Clinic A', role: 'Nurse', duration: '1 year', description: 'ICU.' },
-        { employer: 'Hospital B', role: 'Caregiver', duration: '2 years', description: 'Elderly care.' },
+        { employer_name: 'Clinic A', job_title: 'Nurse', start_date: '2023-01-01', end_date: '2024-01-01', job_description: 'ICU.', currently_employed: false },
+        { employer_name: 'Hospital B', job_title: 'Caregiver', start_date: '2024-01-01', end_date: null, job_description: 'Elderly care.', currently_employed: true },
       ],
       pay_rate: 750,
       pay_period: 'hour',
@@ -106,13 +106,13 @@ test.describe('Phase 1 — Baseline CRUD Correctness', () => {
 
     expect(error).toBeNull();
     expect(row.work_history).toHaveLength(2);
-    expect(row.work_history[0].employer).toBe('Clinic A');
-    expect(row.work_history[0].role).toBe('Nurse');
-    expect(row.work_history[1].employer).toBe('Hospital B');
-    expect(row.work_history[1].description).toBe('Elderly care.');
+    expect(row.work_history[0].employer_name).toBe('Clinic A');
+    expect(row.work_history[0].job_title).toBe('Nurse');
+    expect(row.work_history[1].employer_name).toBe('Hospital B');
+    expect(row.work_history[1].job_description).toBe('Elderly care.');
     expect(row.pay_rate).toBe(750);
     expect(row.pay_period).toBe('hour');
-    expect(row.availability).toBe('this_week');
+    expect(row.availability).toBe('1 week notice');
     expect(row.has_nbi_clearance).toBe(true);
     expect(row.years_of_experience).toBe(5);
   });

@@ -31,11 +31,12 @@ export interface Submission {
 }
 
 export interface WorkHistoryEntry {
-  employer?: string;
-  role?: string;
-  duration?: string;
-  description?: string;
-  [key: string]: unknown;
+  employer_name?: string;
+  job_title?: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  job_description?: string;
+  currently_employed?: boolean;
 }
 
 export interface SkillDefinition {

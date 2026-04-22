@@ -49,11 +49,12 @@ export function getSupabaseClient(): SupabaseClient {
 // ---------------------------------------------------------------------------
 
 export interface WorkHistoryEntry {
-  employer?: string;
-  role?: string;
-  duration?: string;
-  description?: string;
-  [key: string]: unknown;
+  employer_name?: string;
+  job_title?: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  job_description?: string;
+  currently_employed?: boolean;
 }
 
 export interface SubmissionPayload {
@@ -107,10 +108,12 @@ export function makePayload(overrides: Partial<SubmissionPayload> = {}): Submiss
     years_of_experience: 3,
     work_history: [
       {
-        employer: 'Test Hospital',
-        role: 'Caregiver',
-        duration: '2 years',
-        description: 'Providing home care services.',
+        employer_name: 'Test Hospital',
+        job_title: 'Caregiver',
+        start_date: '2022-01-01',
+        end_date: null,
+        job_description: 'Providing home care services.',
+        currently_employed: true,
       },
     ],
     has_valid_id: true,
@@ -146,10 +149,12 @@ export function makeBulkPayloads(count: number): SubmissionPayload[] {
  */
 export function makeOversizedWorkHistory(entryCount = 50): WorkHistoryEntry[] {
   return Array.from({ length: entryCount }, (_, i) => ({
-    employer: `Hospital ${i} — ${'x'.repeat(200)}`,
-    role: 'Senior Caregiver',
-    duration: `${i + 1} year${i !== 0 ? 's' : ''}`,
-    description: 'y'.repeat(500),
+    employer_name: `Hospital ${i} — ${'x'.repeat(200)}`,
+    job_title: 'Senior Caregiver',
+    start_date: `${2000 + i}-01-01`,
+    end_date: i < entryCount - 1 ? `${2000 + i}-12-31` : null,
+    job_description: 'y'.repeat(500),
+    currently_employed: i === entryCount - 1,
   }));
 }
 

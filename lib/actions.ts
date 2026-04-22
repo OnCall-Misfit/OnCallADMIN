@@ -72,3 +72,17 @@ export async function deleteSubmission(id: string): Promise<ActionResult> {
 
   revalidatePath('/');
 }
+
+export async function deleteSubmissions(ids: string[]): Promise<ActionResult> {
+  if (ids.length === 0) return;
+  const supabase = createAdminClient();
+
+  // Delete dependent rows first (no CASCADE defined in schema)
+  await supabase.from('caregiver_skills').delete().in('submission_id', ids);
+  await supabase.from('ingestion_logs').delete().in('submission_id', ids);
+
+  const { error } = await supabase.from('submissions').delete().in('id', ids);
+  if (error) return { error: error.message };
+
+  revalidatePath('/');
+}

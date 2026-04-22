@@ -149,10 +149,10 @@ test.describe('Phase 3 — Edge Cases & Error Conditions', () => {
     expect(row!.work_history).toHaveLength(50);
 
     // Spot-check first and last entries for data integrity.
-    expect(row!.work_history[0].employer).toBe(bigHistory[0].employer);
-    expect(row!.work_history[0].description).toBe(bigHistory[0].description);
-    expect(row!.work_history[49].employer).toBe(bigHistory[49].employer);
-    expect(row!.work_history[49].description).toBe(bigHistory[49].description);
+    expect(row!.work_history[0].employer_name).toBe(bigHistory[0].employer_name);
+    expect(row!.work_history[0].job_description).toBe(bigHistory[0].job_description);
+    expect(row!.work_history[49].employer_name).toBe(bigHistory[49].employer_name);
+    expect(row!.work_history[49].job_description).toBe(bigHistory[49].job_description);
   });
 
   // -------------------------------------------------------------------------
