@@ -64,7 +64,7 @@ export interface SubmissionPayload {
   gender: string;
   location: string;
   contact_number: string;
-  fb_link: string;
+  fb_link: string | null;
   years_of_experience: number;
   work_history: WorkHistoryEntry[];
   has_valid_id: boolean;

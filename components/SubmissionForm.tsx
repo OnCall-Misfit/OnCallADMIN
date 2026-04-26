@@ -312,7 +312,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
       gender: form.gender as 'Male' | 'Female' | 'LGBTQ+' | 'Prefer not to say',
       location: form.location,
       contact_number: form.contact_number,
-      fb_link: form.fb_link,
+      fb_link: form.fb_link.trim() || null,
       years_of_experience: parseInt(form.years_of_experience),
       work_history,
       has_valid_id: form.has_valid_id,
@@ -531,13 +531,12 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
             />
           </div>
           <div className="col-span-2">
-            <label className={label}>Facebook Link *</label>
+            <label className={label}>Facebook Link</label>
             <input
               name="fb_link"
               value={form.fb_link}
               onChange={handleChange}
               className={input}
-              required
             />
           </div>
         </div>
