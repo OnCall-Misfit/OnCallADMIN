@@ -27,6 +27,8 @@ export interface Submission {
   pay_period: 'hour' | 'day' | 'month' | null;
   availability: string | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
+  shift_preference: 'Dayshift' | 'Nightshift' | 'Both' | null;
+  type_of_work: 'Caregiver' | 'Old sitter' | 'Both' | null;
   avatar_url: string | null;
 }
 
@@ -70,6 +72,8 @@ export interface SubmissionPayload {
   pay_period: 'hour' | 'day' | 'month' | null;
   availability: string | null;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
+  shift_preference: 'Dayshift' | 'Nightshift' | 'Both' | null;
+  type_of_work: 'Caregiver' | 'Old sitter' | 'Both' | null;
   avatar_url: string | null;
   skill_ids: number[];
 }

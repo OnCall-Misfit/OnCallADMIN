@@ -36,6 +36,8 @@ type FormState = {
   availability: string;
   availability_other: string;
   work_setup: string;
+  shift_preference: string;
+  type_of_work: string;
   avatar_url: string;
 };
 
@@ -106,6 +108,8 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
     availability: availIsPreset ? storedAvail : 'Other',
     availability_other: availIsPreset ? '' : storedAvail,
     work_setup: submission?.work_setup ?? '',
+    shift_preference: submission?.shift_preference ?? 'Both',
+    type_of_work: submission?.type_of_work ?? 'Both',
     avatar_url: submission?.avatar_url ?? '',
   });
 
@@ -335,6 +339,16 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
         | 'stay-in'
         | 'stay-out'
         | 'stay-in & stay-out'
+        | null,
+      shift_preference: (form.shift_preference || null) as
+        | 'Dayshift'
+        | 'Nightshift'
+        | 'Both'
+        | null,
+      type_of_work: (form.type_of_work || null) as
+        | 'Caregiver'
+        | 'Old sitter'
+        | 'Both'
         | null,
       avatar_url: finalAvatarUrl,
       skill_ids: Array.from(selectedSkills),
@@ -687,6 +701,32 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
               <option value="stay-in">stay-in</option>
               <option value="stay-out">stay-out</option>
               <option value="stay-in & stay-out">stay-in &amp; stay-out</option>
+            </select>
+          </div>
+          <div>
+            <label className={label}>Shift Preference</label>
+            <select
+              name="shift_preference"
+              value={form.shift_preference}
+              onChange={handleChange}
+              className={input}
+            >
+              <option value="Dayshift">Dayshift</option>
+              <option value="Nightshift">Nightshift</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+          <div>
+            <label className={label}>Type of Work</label>
+            <select
+              name="type_of_work"
+              value={form.type_of_work}
+              onChange={handleChange}
+              className={input}
+            >
+              <option value="Caregiver">Caregiver</option>
+              <option value="Old sitter">Old sitter</option>
+              <option value="Both">Both</option>
             </select>
           </div>
         </div>
