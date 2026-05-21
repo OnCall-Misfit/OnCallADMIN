@@ -214,7 +214,7 @@ export default function SubmissionsTable({ submissions }: Props) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                      {s.availability ?? '—'}
+                      {s.availability || '—'}
                     </td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                       {s.work_setup ?? '—'}

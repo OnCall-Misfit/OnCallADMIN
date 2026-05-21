@@ -333,8 +333,8 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
       pay_rate: form.pay_rate ? parseFloat(form.pay_rate) : null,
       pay_period: (form.pay_period || null) as 'hour' | 'day' | 'month' | null,
       availability: form.availability === 'Other'
-        ? (form.availability_other || null)
-        : (form.availability || null),
+        ? (form.availability_other || '')
+        : (form.availability || ''),
       work_setup: (form.work_setup || null) as
         | 'stay-in'
         | 'stay-out'
@@ -347,7 +347,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
         | null,
       type_of_work: (form.type_of_work || null) as
         | 'Caregiver'
-        | 'Old sitter'
+        | 'Old Sitter'
         | 'Both'
         | null,
       avatar_url: finalAvatarUrl,
@@ -725,7 +725,7 @@ export default function SubmissionForm({ submission, skillDefinitions }: Props) 
               className={input}
             >
               <option value="Caregiver">Caregiver</option>
-              <option value="Old sitter">Old sitter</option>
+              <option value="Old Sitter">Old Sitter</option>
               <option value="Both">Both</option>
             </select>
           </div>

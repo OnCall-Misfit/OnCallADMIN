@@ -80,7 +80,7 @@ export interface SubmissionPayload {
   error_message: string | null;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: string | null;
+  availability: string;
   avatar_url: string | null;
   /** Not a DB column — consumed by insertSubmission() and stripped before insert. */
   skill_ids: number[];

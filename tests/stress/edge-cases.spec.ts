@@ -171,7 +171,6 @@ test.describe('Phase 3 — Edge Cases & Error Conditions', () => {
         error_message: null,
         pay_rate: null,
         pay_period: null,
-        availability: null,
       })
     );
 
@@ -190,7 +189,6 @@ test.describe('Phase 3 — Edge Cases & Error Conditions', () => {
     expect(row!.error_message).toBeNull();
     expect(row!.pay_rate).toBeNull();
     expect(row!.pay_period).toBeNull();
-    expect(row!.availability).toBeNull();
   });
 
   // -------------------------------------------------------------------------

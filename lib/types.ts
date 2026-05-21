@@ -25,10 +25,10 @@ export interface Submission {
   updated_at: string;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: string | null;
+  availability: string;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
   shift_preference: 'Dayshift' | 'Nightshift' | 'Both' | null;
-  type_of_work: 'Caregiver' | 'Old sitter' | 'Both' | null;
+  type_of_work: 'Caregiver' | 'Old Sitter' | 'Both' | null;
   avatar_url: string | null;
 }
 
@@ -70,10 +70,10 @@ export interface SubmissionPayload {
   error_message: string | null;
   pay_rate: number | null;
   pay_period: 'hour' | 'day' | 'month' | null;
-  availability: string | null;
+  availability: string;
   work_setup: 'stay-in' | 'stay-out' | 'stay-in & stay-out' | null;
   shift_preference: 'Dayshift' | 'Nightshift' | 'Both' | null;
-  type_of_work: 'Caregiver' | 'Old sitter' | 'Both' | null;
+  type_of_work: 'Caregiver' | 'Old Sitter' | 'Both' | null;
   avatar_url: string | null;
   skill_ids: number[];
 }
