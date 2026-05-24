@@ -77,6 +77,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 800, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-in' as const, shift_preference: 'Both' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['General Elderly Care / Companionship', "Dementia / Alzheimer's", 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Light Housekeeping & Errands'],
   },
   {
@@ -94,6 +95,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 650, pay_period: 'day' as const,
     availability: '1 week notice',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Post-Surgical / Orthopedic Recovery', 'Wound & Bedsore Care', 'Vital Signs & Blood Sugar Monitoring', 'Bathing & Grooming & Personal Hygiene'],
   },
   {
@@ -112,6 +114,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1200, pay_period: 'day' as const,
     availability: '2 weeks notice',
+    work_setup: 'stay-in' as const, shift_preference: 'Both' as const, type_of_work: 'Both' as const,
     skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
@@ -129,6 +132,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 600, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Special Needs / Pediatric', 'Bedridden / Total Mobility Assistance', 'Lifting & Transferring & Repositioning', 'Light Housekeeping & Errands'],
   },
   {
@@ -146,6 +150,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1000, pay_period: 'day' as const,
     availability: '1 week notice',
+    work_setup: 'stay-in' as const, shift_preference: 'Both' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Cancer / Palliative / Hospice Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Respiratory Support (Oxygen & Nebulizer)', 'Vital Signs & Blood Sugar Monitoring', 'Companionship & Supervision'],
   },
   {
@@ -163,6 +168,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 500, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Old Sitter' as const,
     skillNames: ['General Elderly Care / Companionship', 'Light Housekeeping & Errands', 'Feeding & Meal Preparation', 'Companionship & Supervision'],
   },
   {
@@ -181,6 +187,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1500, pay_period: 'day' as const,
     availability: '2 weeks notice',
+    work_setup: 'stay-in' as const, shift_preference: 'Nightshift' as const, type_of_work: 'Both' as const,
     skillNames: ["Dementia / Alzheimer's", 'Bedridden / Total Mobility Assistance', 'Stroke / Post-Stroke Care', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Airway Management (Tracheostomy & Suctioning)', 'Respiratory Support (Oxygen & Nebulizer)'],
   },
   {
@@ -198,6 +205,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 700, pay_period: 'day' as const,
     availability: '1 week notice',
+    work_setup: 'stay-in & stay-out' as const, shift_preference: 'Both' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Post-Surgical / Orthopedic Recovery', 'Vital Signs & Blood Sugar Monitoring', 'Medication Administration & Management', 'Lifting & Transferring & Repositioning', 'Airway Management (Tracheostomy & Suctioning)'],
   },
   {
@@ -215,6 +223,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: true, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 580, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Old Sitter' as const,
     skillNames: ['Special Needs / Pediatric', 'Feeding & Meal Preparation', 'Companionship & Supervision', 'Light Housekeeping & Errands'],
   },
   {
@@ -233,6 +242,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1800, pay_period: 'day' as const,
     availability: '2 weeks notice',
+    work_setup: 'stay-in' as const, shift_preference: 'Both' as const, type_of_work: 'Both' as const,
     skillNames: ['Wound & Bedsore Care', 'Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Medication Administration & Management', 'Post-Surgical / Orthopedic Recovery', 'Airway Management (Tracheostomy & Suctioning)', 'Vital Signs & Blood Sugar Monitoring'],
   },
   {
@@ -250,6 +260,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 950, pay_period: 'day' as const,
     availability: '1 week notice',
+    work_setup: 'stay-in' as const, shift_preference: 'Both' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Stroke / Post-Stroke Care', 'General Elderly Care / Companionship', 'Medication Administration & Management', 'Feeding & Meal Preparation', 'Light Housekeeping & Errands'],
   },
   {
@@ -266,6 +277,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: false, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 480, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Caregiver' as const,
     skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Bathing & Grooming & Personal Hygiene', 'Lifting & Transferring & Repositioning', 'Companionship & Supervision'],
   },
   {
@@ -284,6 +296,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1400, pay_period: 'day' as const,
     availability: '2 weeks notice',
+    work_setup: 'stay-in & stay-out' as const, shift_preference: 'Nightshift' as const, type_of_work: 'Both' as const,
     skillNames: ['General Elderly Care / Companionship', 'Cancer / Palliative / Hospice Care', 'Medication Administration & Management', 'Vital Signs & Blood Sugar Monitoring', 'Respiratory Support (Oxygen & Nebulizer)', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
   {
@@ -301,6 +314,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: false, has_tesda_nc2: false,
     status: 'received' as const, pay_rate: 560, pay_period: 'day' as const,
     availability: 'Immediately / ASAP',
+    work_setup: 'stay-out' as const, shift_preference: 'Dayshift' as const, type_of_work: 'Old Sitter' as const,
     skillNames: ['Vital Signs & Blood Sugar Monitoring', 'Feeding & Meal Preparation', 'Medication Administration & Management', 'Bathing & Grooming & Personal Hygiene'],
   },
   {
@@ -319,6 +333,7 @@ const PROFILES = [
     has_valid_id: true, has_nbi_clearance: true, has_barangay_clearance: true, has_tesda_nc2: true,
     status: 'processed' as const, pay_rate: 1100, pay_period: 'day' as const,
     availability: '1 week notice',
+    work_setup: 'stay-in & stay-out' as const, shift_preference: 'Both' as const, type_of_work: 'Both' as const,
     skillNames: ['Injections & IV Therapy (Requires RN)', 'Catheter Care (Foley / IFC)', 'Wound & Bedsore Care', 'Medication Administration & Management', 'Airway Management (Tracheostomy & Suctioning)', 'Kidney Disease / Dialysis Patient', 'Medical Escort / Hospital Watcher (Bantay)'],
   },
 ] as const;
